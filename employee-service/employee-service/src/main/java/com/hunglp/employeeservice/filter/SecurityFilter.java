@@ -1,5 +1,7 @@
 package com.hunglp.employeeservice.filter;
 
+import org.apache.http.HttpException;
+import org.apache.http.conn.UnsupportedSchemeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -27,11 +29,11 @@ public class SecurityFilter implements Filter {
 
 
             MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-//            map.add("auth", servletRequest.getHeader("Authorization").toString().split("")[1]);
             HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-//            map.add("auth", httpRequest.getHeader("Authorization").split(" ")[1]);
-//            HttpHeaders headers = createHttpHeaders("fred","1234");
-//            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+
+            if(httpRequest.getHeader("Authorization") == null){
+                throw new HttpException("Missing token");
+            }
 
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.add("Authorization", "Bearer " + httpRequest.getHeader("Authorization").split(" ")[1]);
@@ -40,6 +42,7 @@ public class SecurityFilter implements Filter {
                     restTemplate.exchange("http://localhost:8083/auth/authenticate",
                             HttpMethod.POST,
                             entity,Object.class);
+            System.out.println(response);
 
         } catch (Exception e) {
             System.out.println(e);

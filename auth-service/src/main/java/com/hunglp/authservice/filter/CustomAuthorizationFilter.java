@@ -25,12 +25,13 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        filterChain.doFilter(request,response);
         // Authentication
         if (request.getServletPath().equals("/auth/login") ||
                 request.getServletPath().equals("/auth/refresh-token") ||
                 request.getServletPath().equals("/auth/logout")) {
             filterChain.doFilter(request, response);
-        } else {
+        } else if(request.getServletPath().equals("/auth/authenticate")){
             // Verify Token
             String authorizationHeader = request.getHeader("Authorization");
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -44,7 +45,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {
-                    log.error("Error when login");
+                    log.error("Error when login, " + e.getMessage());
                     response.setHeader("error", e.getMessage());
                     response.setStatus(HttpStatus.FORBIDDEN.value());
                     Map<String, String> errors = new HashMap<>();
