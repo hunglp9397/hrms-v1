@@ -63,36 +63,17 @@ public class AuthController {
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 
+    @PostMapping("/test-authen")
+    public String testAuthen(){
+        System.out.println("Hello");
+        return "Hello";
+    }
+
     @PostMapping("/authenticate")
-    public String authenticate(@RequestHeader MultiValueMap<String, String> headers) {
-
-        String username = "";
-        String authorizationHeader = headers.get("Authorization").toString();
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            try {
-                String token = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(token);
-                 username = decodedJWT.getSubject();
-
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
-
-        return username;
-
-
-//        String authorizationHeader = request.getHeader("Authorization");
-//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-//            try {
-//                String token = authorizationHeader.substring("Bearer ".length());
-//                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-//                JWTVerifier verifier = JWT.require(algorithm).build();
-//                DecodedJWT decodedJWT = verifier.verify(token);
-//                String username = decodedJWT.getSubject();
-//                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, null);
+    public String authenticate() {
+        System.out.println("Authenticating...");
+        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
 
 
     }

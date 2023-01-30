@@ -43,6 +43,9 @@ public class SecurityFilter implements Filter {
                             HttpMethod.POST,
                             entity,Object.class);
             System.out.println(response);
+            if(response.getStatusCode()==HttpStatus.OK){
+                filterChain.doFilter(servletRequest,servletResponse);
+            }
 
         } catch (Exception e) {
             System.out.println(e);

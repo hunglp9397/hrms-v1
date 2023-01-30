@@ -1,8 +1,10 @@
 package com.hunglp.authservice.security;
 
 
+//import com.hunglp.authservice.filter.CustomAuthorizationFilter;
 import com.hunglp.authservice.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,8 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/auth/login/**", "/auth/refresh-token/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
 
-        // Authorization any request
-//        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        //Authorization any request
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
